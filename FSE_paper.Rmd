@@ -1,0 +1,69 @@
+---
+title: "Assignment ASR"
+author: "Frederic Denker"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+header-includes:
+   - \usepackage{dcolumn}
+   - \usepackage{setspace}
+   - \doublespacing
+   - \usepackage[utf8]{inputenc}
+   - \usepackage{float}
+   - \usepackage{xcolor}
+   - \usepackage{lipsum}
+   
+fontsize: 12pt
+geometry: margin=2.5cm
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: yes
+  html_document:
+    code_folding: hide
+    latex_engine: xelatex
+urlcolor: blue
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r first_setup, include=FALSE}
+#Loading all the required packages
+require(data.table)
+require(magrittr)
+require(dplyr)
+require(tidyverse)
+require(data.table)
+require(gtools)
+library(lubridate)
+library(stargazer)
+library(tinytex)
+library("citr")
+library(ggplot2)
+library("ggsci")
+library(ggthemes)
+require(tinytex)
+library(sandwich)
+library(miceadds)
+library(RCurl)
+
+
+#Todo
+#Reasearch summary
+
+#Add sector control (US Patent type maybe?)
+# Add NAs siehe anti_join(uspat_join,full_ops_query_data, by = c("uspto_fp_number_f_joining" = "ops_int_pat_number")))
+```
+
+
+``` {r loading_data, include=FALSE, cache=TRUE}
+
+
+```
+
+## Research Summary:
+
+This paper examines the usage of German utility models in contrast to German patents. Theory suggests that utility models are a good patent alternative to secure the property rights to incremental innovation. As incremental innovation protected by utility models loses relevance more quickly, it is expected to be cited earlier than the more radical inventions that are protected by patents. This is validated in this paper, which shows that in American Patent applications utility models are on average cited earlier, both by applicants and by examiners. Additionally, the difference in citation behavior between examiners and the applicants is shown to be reversed for utility models and patents.
+
+## Keywords
+patent citation, utility models, innovation policy
+
+\newpage
