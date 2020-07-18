@@ -27,7 +27,6 @@ temp = data.frame()
 i= 2
 while(i < 13){
   temp = Questions[,c(1,(i*6-4):(i*6+1))]
-  print(names(temp))
   names(temp) <- names(Questions_sorted)
   Questions_sorted=as.data.frame(mapply(c, Questions_sorted,temp))
   i = i+1
@@ -57,7 +56,6 @@ df = left_join(Responses_long,Questions_sorted, by = c("join"="join"))
 
 ## Cleaning up the table
 df %<>% select(-c("questions_nr","join","deck.y","id_vignette"))
-names(df)
 ## Recoding:
 
 
@@ -68,4 +66,4 @@ df = fastDummies::dummy_cols(df,select_columns = c("gender","degree","origin","i
 
 ## Deleting everything that is not needed anymore
 
-rm(temp,i,Responses)
+rm(temp,i,Responses, Questions, Questions_sorted, Responses_long)

@@ -35,15 +35,16 @@ ols_2 <- lm(donation ~ gender_Male +
             + income_rich_job
             + received_100+ received_1000 
             + goals_mothers + goals_state_capacity
-            + channel_through_person, data = df)
+            + channel_through_person
+            + difficulty, data = df)
 summary(ols_2)
 
 ols_3 <- lm(donation ~ gender_Male + 
-              origin_tax_refund + origin_gift_from_mother
+              origin
             + income_rich_job
-            + received_100+ received_1000 
-            + goals_mothers + goals_state_capacity
-            + channel_through_person
+            + received
+            + goals
+            + channel
             + origin_gift_from_mother*goals_mothers, data = df)
 summary(ols_3)
 
@@ -66,4 +67,23 @@ ols_5 <- lm(donation ~ gender_Male +
             + origin_tax_refund*goals_state_capacity, data = df)
 summary(ols_5)
 
+ols_6 <- lm(donation ~ gender_Male + 
+              origin_tax_refund + origin_gift_from_mother
+            + income_rich_job
+            + received_100+ received_1000 
+            + goals_mothers + goals_state_capacity
+            + channel_through_person
+            # + origin_gift_from_mother*goals_mothers*gender_Male
+            + origin_tax_refund*goals_state_capacity*gender_Male, data = df)
+summary(ols_6)
+
+ols_7 <- lm(donation ~ gender_Male + 
+              origin_tax_refund + origin_gift_from_mother
+            + income_rich_job
+            + received_100+ received_1000 
+            + goals_mothers + goals_state_capacity
+            + channel_through_person
+            + origin_gift_from_mother*goals_mothers*gender_Male
+            + origin_tax_refund*goals_state_capacity*gender_Male, data = df)
+summary(ols_7)
 
