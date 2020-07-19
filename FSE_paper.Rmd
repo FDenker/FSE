@@ -70,7 +70,7 @@ What, why and how?
 Relevant Theories, Hypnosis building
 
 ## Method
-
+<!-- To do: Merge with Dorians part -->
 Why FSE?
 
 The next part will give short description of the survey methodology itsself:
@@ -102,6 +102,35 @@ knitr::include_graphics('Screenshot_vignette.PNG')
 
 In addition to these 12 vignettes we asked the respondents to answer 5 questions on themselves, more specifically gender, year of birth, country of residence and highest educational qualification. 
 
+## Theoretical Background and Relevance
+
+### Relevance
+
+Donations for humanitarian purposes are essential for many organizations and regions of the world. There is much research in the literature to understand why and how people donate money. VGL XXX. 
+Although there are discussions about the efficiency and long-term effects of charitable donations and foreign aid (SACHS ZITIEREN), millions of people, through no fault of their own, find themselves in situations where donations are essential for survival. From this fact and the mandate of the UN Universal Declaration of Human Rights (ART 1 and 3) "All human beings are born free and equal in dignity and rights", "Everyone has the right to life, liberty and security of person". it follows that at this point in time it is not possible to refrain from making donations. 
+In this study we will not talk about the moral and economic implications of donations, but we will assume that they are necessary. We are only interested in understanding why people donate and what they donate for. The results of this experiment will help charitable organizations to better adapt fundraising to their specific circumstances. This should maximize the amount of money donated to charity. 
+
+### The Factorial Survey Methodology 
+
+Ample research is based on empirical analyses of the donation behavior of specific population groups. XXX While this approach reflects reality more accurately because it takes unobserved factors into account when individuals make decisions, it is precisely here that the weakness of this analysis technique lies. (XXX) Although Factorial Surveys are not a new approach in the field, we believe that our approach deserves some attention. Through a Factorial Survey it is possible to combine the advantages of an experiment with those of a questionnaire. This means that although the number of participants is significantly higher than in a laboratory experiment, causal statements can be made by allowing the researchers to control all factors.
+
+
+### Theoretical Background
+
+In this section we will explain the theoretical connections of individual variables and dimensions with the willingness to donate. The first variable is the origin of the money that the participant should imagine to have received. Several authors have already investigated how different origins of money can change the probability and amount of a donation. For example, Steinberg et al. find in their study "Inheritance and Charitable Donations" that inherited money has a significantly higher elasticity in donations than earned money. The theoretical argumentation used by the authors is the "Mental Accounting Theory" according to Shefrin and Thaler. Mental accounting is used in behavioural economics as an approach to explain the varying handling of different (objectively often equivalent) financial transactions. Thaler's analyses for empirical anomalies in orthodox economics and his analysis of mental accounting earned him a Nobel Prize in 2017. Accordingly, his theories are widely accepted and represent the modern basis for behavioural economics. 
+In our study the variable takes the values: 
+* Tax refund 
+* Bonus
+* Gift from mother 
+The tax refund is a windfall gain where we expect the elasticity of the donations to be relatively high. (XXX) Furthermore, the variable should point out the positive aspects of a nation state (REVISION) and thus be linked to the aim of the donation. The interaction with the objectives of the donation will be examined in more detail at a later stage. The second variable, the bonus, represents the origin "earned money". Since the money itself was earned here, we assume that there will be a significantly lower elasticity and willingness to donate. Because people feel as if they have a claim to the money. Furthermore, studies have already confirmed that people are driven into a "market mode" by self-earned money. Here people become less cooperative and less social. They live more according to the motto: "When everyone thinks of themselves, everyone is thought of."(BBE LAST SESSION + REVISION) Lastly, we will focus on the expression "gift of the mother".  A gift from the mother is a windfall gain but is often connected with the norm that the money is spent for the own or common good. Therefore we expect that the willingness to donate will decrease. (REVISING)
+
+In summary, our hypotheses regarding the first variable are:
+*H1a: $\beta_{taxrefund} > 0$
+*H1b: $\beta_{earnedmodey} < 0$
+*H1c: $\beta_{\a_{giftfrommother} < 0$
+
+
+
 ## Results
 
 Before looking at inferential statistics it is essential to get an overview over the data, starting with the properties of the respondents themsselves:
@@ -114,6 +143,8 @@ p2=ggplot(data=Responses, aes(x=degree)) +
   geom_histogram(stat="count") +ylab("Count")+xlab("Highest degree obtained")+
   ylim(0,15)
 grid.arrange(p1,p2,nrow=1)
+
+#Lass uns ein theme bei allen Plots einfügen: theme_minimal und theme_bw
 ```
 
 In order to give a short display of the data, the distribution of the main outcome variable is plotted below:
@@ -128,6 +159,8 @@ qplot(df$donation, geom = "blank") +
                          sd = sd(df$donation)), 
                 col = "darkgreen") +
   ylab("Proportion") + xlab("Selected willingness to donate")
+
+#Ich halte Dnorm hier nicht für angemessen :D Entweder wir gehen mit einer Chi Squared Verteilung oder wir lassen das stat_function argument raus
 ```
 
 
