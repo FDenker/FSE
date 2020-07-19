@@ -1,6 +1,6 @@
 ---
-title: "Assignment ASR"
-author: "Frederic Denker"
+title: "Assignment FSE"
+author: "Dorian Quelle & Frederic Denker"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 header-includes:
    - \usepackage{dcolumn}
@@ -12,7 +12,7 @@ header-includes:
    - \usepackage{lipsum}
    
 fontsize: 12pt
-geometry: margin=2.5cm
+geometry: margin=3cm
 output:
   pdf_document:
     latex_engine: xelatex
@@ -27,25 +27,20 @@ editor_options:
 
 ```{r first_setup, include=FALSE}
 #Loading all the required packages
-require(data.table)
-require(magrittr)
-require(dplyr)
-require(tidyverse)
-require(data.table)
-require(gtools)
-library(lubridate)
-library(stargazer)
-library(tinytex)
-library("citr")
-library(ggplot2)
-library("ggsci")
-library(ggthemes)
-require(tinytex)
-library(sandwich)
-library(miceadds)
-library(RCurl)
-
-
+pacman::p_load(dplyr, # data management
+               ggplot2, # plots
+               psych, # detailed descriptives
+               summarytools, # frequency tables
+               olsrr, # Breusch-Pagan test
+               sandwich, # Robust variance-covariance matrices
+               lmtest, # Robust test of SE
+               multiwayvcov, # Cluster standard errors
+               stargazer,# Regression tables
+               lme4, # Mixed-effects models
+               sjPlot, # Tables for mixed-effects models 
+               fastDummies,
+               tidyverse,
+               gridExtra) 
 #Todo
 #Reasearch summary
 
@@ -54,16 +49,91 @@ library(RCurl)
 ```
 
 
-``` {r loading_data, include=FALSE, cache=TRUE}
-
-
+``` {r loading_data, include=FALSE}
+source("Data_preparation.R")
 ```
 
 ## Research Summary:
 
-This paper examines the usage of German utility models in contrast to German patents. Theory suggests that utility models are a good patent alternative to secure the property rights to incremental innovation. As incremental innovation protected by utility models loses relevance more quickly, it is expected to be cited earlier than the more radical inventions that are protected by patents. This is validated in this paper, which shows that in American Patent applications utility models are on average cited earlier, both by applicants and by examiners. Additionally, the difference in citation behavior between examiners and the applicants is shown to be reversed for utility models and patents.
 
 ## Keywords
-patent citation, utility models, innovation policy
+Factorial survey experiment, donation, nudging
 
 \newpage
+
+## Introduction
+
+What, why and how?
+
+## Theory: 
+
+Relevant Theories, Hypnosis building
+
+## Method
+
+Why FSE?
+
+The next part will give short description of the survey methodology itsself:
+
+The initial planning was to run this experiment as Pen-and-Paper Personal Interviews (PAPI). Due to the Covid-19 Pandemic this was not feasible anymore. Therefore, we resorted to sending the PDF of the questionnaires to the respondents and asking them to print it and send it back. 
+
+When creating the questionnaires a sampling strategy needs to be employed. However, our survey only has 5 dimensions with 3,3,3,2,2 levels. This means that we have a universe of 108 unique vignettes. Including 12 vignettes for each survey we able to survey the complete universe of vignettes in 9 surveys. We surveyed 17 individuals and each deck at least once which should increases the validity.
+
+
+
+## Operationalization 
+
+For each of the twelve vignettes we presented the respondent with five dimensions for which he or she had to respond to the question _How likely is it that you are going to donate the amount?_
+The following dimensions were:
+
+* The working situation of the person who will be asked to donate. The available options are a minimum wage job and a well paying job. 
+* The amount of money you receive. It can be either 10, 100 or 1000 Euros.
+* The origin of the money. The available options were tax refund, gift from mother or a bonus from work.
+* The channel of the money. This differentiates between whether you have yet to receive the money and can decide to redirect it to the cause or whether you have already received the money.
+* Lastly, the goal of the donation which can be building state capacity in Uganda, supporting small businesses and entrepreneurs in Uganda or provide education for young mothers in Uganda.
+
+The respondent is then asked about their likelihood of donating using a Likert Scale with 5 values. The extremes (-2 and 2) were labeled "Very unlikely" and "Very likely" respectively. 
+
+Below you will find one example vignette as it was presented to the respondents:
+
+```{r echo=FALSE, out.width='105%'}
+knitr::include_graphics('Screenshot_vignette.PNG')
+```
+
+In addition to these 12 vignettes we asked the respondents to answer 5 questions on themselves, more specifically gender, year of birth, country of residence and highest educational qualification. 
+
+## Results
+
+Before looking at inferential statistics it is essential to get an overview over the data, starting with the properties of the respondents themsselves:
+
+```{r echo=FALSE, out.width='105%', warning=FALSE, fig.width=8, fig.height=3}
+p1=ggplot(data=Responses, aes(x=gender)) + 
+  geom_histogram(stat="count") +ylab("Count")+xlab("Gender")+
+  ylim(0,15)
+p2=ggplot(data=Responses, aes(x=degree)) +
+  geom_histogram(stat="count") +ylab("Count")+xlab("Highest degree obtained")+
+  ylim(0,15)
+grid.arrange(p1,p2,nrow=1)
+```
+
+In order to give a short display of the data, the distribution of the main outcome variable is plotted below:
+
+
+``` {r plotting_proportions, include=TRUE, echo=FALSE}
+qplot(df$donation, geom = "blank") +
+  geom_histogram(aes(y = ..density..), binwidth = 1, 
+                 fill = "orange",  col = "black") +
+  stat_function(fun = dnorm, 
+                args = c(mean = mean(df$donation), 
+                         sd = sd(df$donation)), 
+                col = "darkgreen") +
+  ylab("Proportion") + xlab("Selected willingness to donate")
+```
+
+
+
+## Discussion
+
+
+
+

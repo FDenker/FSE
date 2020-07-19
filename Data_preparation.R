@@ -2,7 +2,8 @@ library(readr)
 library("readxl")
 library(magrittr)
 library(fastDummies)
-
+library(dplyr)
+library(tidyverse)
 # Starting with the responses
 
 Responses <- read_csv("data/Befragung_Datenerhebung.csv")
@@ -10,8 +11,9 @@ colnames(Responses) <- c("befragten_id","deck", "gender","year_of_birth","countr
 
 ## Declaring NAs
 Responses %<>% na_if("-99")
-Responses$degree = recode(Responses$degree,"1"="High School","2"="Graduate","3"="Ph.D")
+Responses$degree = recode(Responses$degree,"1"="High School","2"="Graduate","3"="Postgraduate (Ph.D)")
 Responses$gender = recode(Responses$gender,"1"="Male","2"="Female")
+Responses$degree <- factor(Responses$degree,levels = c("High School", "Graduate", "Postgraduate (Ph.D)"))
 Responses$country_of_birth = as.factor(Responses$country_of_birth)
 
 Responses_long<- Responses %>% pivot_longer(starts_with("vig"),names_to = "question", values_to = "donation")
@@ -34,7 +36,6 @@ while(i < 13){
 
 
 names(Questions_sorted) = c("deck","id_vignette","origin","income","received","goals","channel")
-freq(Questions_sorted$origin)
 Questions_sorted$income = recode(Questions_sorted$income,"poor job"="poor_job",
                                  "rich job"="rich_job")
 
@@ -66,4 +67,4 @@ df = fastDummies::dummy_cols(df,select_columns = c("gender","degree","origin","i
 
 ## Deleting everything that is not needed anymore
 
-rm(temp,i,Responses, Questions, Questions_sorted, Responses_long)
+rm(temp,i, Questions, Questions_sorted, Responses_long)

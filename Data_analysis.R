@@ -87,3 +87,6 @@ ols_7 <- lm(donation ~ gender_Male +
             + origin_tax_refund*goals_state_capacity*gender_Male, data = df)
 summary(ols_7)
 
+df$question_nr = as.numeric(df$question_nr)
+ols_test <- lm(donation ~ question_nr, data=df)
+summary(ols_test)
