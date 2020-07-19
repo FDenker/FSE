@@ -119,15 +119,18 @@ Ample research is based on empirical analyses of the donation behavior of specif
 
 In this section we will explain the theoretical connections of individual variables and dimensions with the willingness to donate. The first variable is the origin of the money that the participant should imagine to have received. Several authors have already investigated how different origins of money can change the probability and amount of a donation. For example, Steinberg et al. find in their study "Inheritance and Charitable Donations" that inherited money has a significantly higher elasticity in donations than earned money. The theoretical argumentation used by the authors is the "Mental Accounting Theory" according to Shefrin and Thaler. Mental accounting is used in behavioural economics as an approach to explain the varying handling of different (objectively often equivalent) financial transactions. Thaler's analyses for empirical anomalies in orthodox economics and his analysis of mental accounting earned him a Nobel Prize in 2017. Accordingly, his theories are widely accepted and represent the modern basis for behavioural economics. 
 In our study the variable takes the values: 
+
 * Tax refund 
 * Bonus
 * Gift from mother 
+
 The tax refund is a windfall gain where we expect the elasticity of the donations to be relatively high. (XXX) Furthermore, the variable should point out the positive aspects of a nation state (REVISION) and thus be linked to the aim of the donation. The interaction with the objectives of the donation will be examined in more detail at a later stage. The second variable, the bonus, represents the origin "earned money". Since the money itself was earned here, we assume that there will be a significantly lower elasticity and willingness to donate. Because people feel as if they have a claim to the money. Furthermore, studies have already confirmed that people are driven into a "market mode" by self-earned money. Here people become less cooperative and less social. They live more according to the motto: "When everyone thinks of themselves, everyone is thought of."(BBE LAST SESSION + REVISION) Lastly, we will focus on the expression "gift of the mother".  A gift from the mother is a windfall gain but is often connected with the norm that the money is spent for the own or common good. Therefore we expect that the willingness to donate will decrease. (REVISING)
 
 In summary, our hypotheses regarding the first variable are:
-*H1a: $\beta_{taxrefund} > 0$
-*H1b: $\beta_{earnedmodey} < 0$
-*H1c: $\beta_{\a_{giftfrommother} < 0$
+
+* H1a: $\beta_{taxrefund} > 0$
+* H1b: $\beta_{earnedmodey} < 0$
+* H1c: $\beta_{giftfrommother} < 0$
 
 
 
@@ -138,10 +141,10 @@ Before looking at inferential statistics it is essential to get an overview over
 ```{r echo=FALSE, out.width='105%', warning=FALSE, fig.width=8, fig.height=3}
 p1=ggplot(data=Responses, aes(x=gender)) + 
   geom_histogram(stat="count") +ylab("Count")+xlab("Gender")+
-  ylim(0,15)
+  ylim(0,15) + theme_minimal()
 p2=ggplot(data=Responses, aes(x=degree)) +
   geom_histogram(stat="count") +ylab("Count")+xlab("Highest degree obtained")+
-  ylim(0,15)
+  ylim(0,15)+ theme_minimal()
 grid.arrange(p1,p2,nrow=1)
 
 #Lass uns ein theme bei allen Plots einfügen: theme_minimal und theme_bw
@@ -151,16 +154,39 @@ In order to give a short display of the data, the distribution of the main outco
 
 
 ``` {r plotting_proportions, include=TRUE, echo=FALSE}
-qplot(df$donation, geom = "blank") +
-  geom_histogram(aes(y = ..density..), binwidth = 1, 
-                 fill = "orange",  col = "black") +
-  stat_function(fun = dnorm, 
-                args = c(mean = mean(df$donation), 
-                         sd = sd(df$donation)), 
-                col = "darkgreen") +
-  ylab("Proportion") + xlab("Selected willingness to donate")
+#qplot(df$donation, geom = "blank") +
+#  geom_histogram(aes(y = ..density..), binwidth = 1, 
+#                 fill = "orange",  col = "black") +
+#  stat_function(fun = dnorm, 
+#                args = c(mean = mean(df$donation), 
+#                         sd = sd(df$donation)), 
+#                col = "darkgreen") +
+#  ylab("Proportion") + xlab("Selected willingness to donate")
 
 #Ich halte Dnorm hier nicht für angemessen :D Entweder wir gehen mit einer Chi Squared Verteilung oder wir lassen das stat_function argument raus
+
+p3 = ggplot(data=df, aes(x=donation)) + 
+        geom_bar(aes(y = (..count..)/sum(..count..))) +
+        labs(title="Overall",
+          x ="Willingness to donate", y = "Proportion") + 
+        ylim(0,0.4) +
+        theme_minimal()
+
+p4 = ggplot(df[df$gender=="Male",], aes(x=donation)) + 
+        geom_bar(aes(y = (..count..)/sum(..count..))) + 
+        labs(title="Males",
+          x ="Willingness to donate", y = "Proportion") + 
+        ylim(0,0.4) +
+        theme_minimal()
+
+p5 = ggplot(df[df$gender=="Female",], aes(x=donation)) + 
+        geom_bar(aes(y = (..count..)/sum(..count..))) + 
+        labs(title="Females",
+          x ="Willingness to donate", y = "Proportion") + 
+        ylim(0,0.4) +
+        theme_minimal()
+grid.arrange(p3,p4,p5,nrow=1)
+
 ```
 
 
