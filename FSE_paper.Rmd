@@ -40,7 +40,8 @@ pacman::p_load(dplyr, # data management
                sjPlot, # Tables for mixed-effects models 
                fastDummies,
                tidyverse,
-               gridExtra) 
+               gridExtra,
+               readr) 
 #Todo
 #Reasearch summary
 
@@ -128,9 +129,9 @@ The tax refund is a windfall gain where we expect the elasticity of the donation
 
 In summary, our hypotheses regarding the first variable are:
 
-* H1a: $\beta_{taxrefund} > 0$ \\
-* H1b: $\beta_{earnedmodey} < 0$ \\
-* H1c: $\beta_{giftfrommother} < 0$ \\
+* H1a: $\beta_{taxrefund} > 0$
+* H1b: $\beta_{earnedmodey} < 0$
+* H1c: $\beta_{giftfrommother} < 0$
 
 The next two variables we will consider are the income of the person and the amount of money received by each participant. Basically, the income of a person is a variable that in most cases correlates positively with the amount of donations. (e.g. CHANG, Wen-Chun. "Determinants of donations") The participants in our study should imagine that they either have a "well paying job" or a "poorly paying job". Thus, we expect that the willingness to donate increases with rising income, i.e. with a positive manifestation of the binary coded variable "well paying job". Further, participants should imagine that they received varying amounts of money through the previously described channels. The values of this variable were logarithmically increasing: 10,100 \&1000€. The range of values of the variable was determined by considering to what extent the amount of money would be logically compatible with the channels of money transfer. For example, a €10,000 money gift from a mother would be an overloading of the participants' imagination. Equally ridiculous would be a €1 bonus. 
 The next variable that the participants had to imagine was the goal of the humanitarian organisation. Three different variables were coded:
@@ -141,10 +142,14 @@ Although it can be deduced from the literature that the goals of an organization
 "A few years ago I gave a talk to a group of executives in Switzerland. After the conference my wife and I spent a week visiting the area. At that time the Swiss franc was at an all-time high relative to the US dollar, so the usual high prices in Switzerland were astronomical. My wife and I comforted ourselves that I had received a fee for the talk that would easily cover the outrageous prices for hotels and meals. Had I received the same fee a week earlier for a talk in New York though, the vacation
 would have been much less enjoyable." In a later section, he elaborates that it was less painful to spend money in Switzerland because he had a Swiss lecture mental account that could not negatively impact his overall wealth as he was just being "filled". We expect that this will also be the case with the participants' donations. A gift from ones mother and Funding courses for women preparing them for birthgiving and motherhood in Uganda will be included in one Mental Account, as will Thaler's Swiss journey. The same is the true for a bonus resulting from ones own performance and the support of SMEs in developing countries. Finally, a tax refund and support for Uganda's state building capacity should also be included in only one account. Across all of the organizations' goals, we have kept the country target constant for two reasons. First, Uganda is one of the poorest countries in the world. According to the CIA World Factbook, Uganda ranks 199th in the category GDP per Capita. While this does not necessarily say everything about the living standards and the welfare needs of the country's inhabitants, it is a good proxy. (https://www.cia.gov/library/publications/the-world-factbook/rankorder/2004rank.html) The low standard of living in the country where the aid is to go is supposed to confirm the donors' expectation that the people receiving the money will need it. The second reason is that we want to vary as few factors as possible between the different categories in order to guarantee the greatest possible validity of our estimators. Nevertheless, we will analyse the individual interaction effects separately in order to rule out the possibility that the mental linking of the accounts may not have worked for all examples. Furthermore, especially in the case of donations with the goal of motherhood, we will add an interaction with the variable gender. Our hypotheses for the variable "Goals of Donation" are therefore as follows. 
 
-*H2: There will be a significant positive effect of the dummy variable "Equal" which takes the value 1 if the origin and the destination of the money are in the same mental account. So: $\delta_equal > 0$ \\
-*H2a: $\delta_{a_man}*\delta_{\a_goal:mother} > 0 \\
-*H2b: $\delta_{origin:taxrefund}*\delta_{goal:state} > 0 \\
-*H2c: $\delta_{goal:SME} > 0 \\
+
+H2: There will be a significant positive effect of the dummy variable "Equal" which takes the value 1 if the origin and the destination of the money are in the same mental account. So: $\delta_equal > 0$
+
+H2a: $\delta_{a_{man}} \times  \delta_{a_{goal:mother}} > 0 $
+
+H2b: $\delta_{origin:taxrefund} \times \delta_{goal:state} > 0$
+
+H2c: $\delta_{goal:SME} > 0 $
 
 
 ## Results
