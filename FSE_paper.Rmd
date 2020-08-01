@@ -10,7 +10,7 @@ header-includes:
    - \usepackage{float}
    - \usepackage{xcolor}
    - \usepackage{lipsum}
-   
+bibliography: references.bib   
 fontsize: 12pt
 geometry: margin=3cm
 output:
@@ -41,7 +41,8 @@ pacman::p_load(dplyr, # data management
                fastDummies,
                tidyverse,
                gridExtra,
-               readr) 
+               readr,
+               broom) 
 #Todo
 #Reasearch summary
 
@@ -52,6 +53,34 @@ pacman::p_load(dplyr, # data management
 
 ``` {r loading_data, include=FALSE}
 source("Data_preparation.R")
+# Further data preperation
+cond1 <- (df$origin == "gift_from_mother" & df$goals == "mothers")
+cond2 <- (df$origin == "bonus" & df$goals == "entrepreneurs")
+cond3 <- (df$origin == "tax_refund" & df$goals == "state_capacity")
+
+df$equal <- ifelse(cond1 | cond2 | cond3, 1,0)
+df$received <- df$received %>% as.numeric()
+df$origin %<>% as.factor()
+df$goals %<>% as.factor()
+
+df$age <- 2020-df$year_of_birth
+
+# Only Male and Income Rich Job significant 
+#lm(donation ~ gender+income+received+channel+age+times_donated+amount_donated+
+#     equal,
+#   data = df)
+
+#normalize donations
+normalize <- function(x){
+  if(sd(x) %>% is.numeric()) return((x-mean(x))/sd(x))
+  else print("Error in normalizing")
+}
+
+
+df %<>% 
+  group_by(befragten_id) %>%
+  mutate("normaldonations" = normalize(donation))
+
 ```
 
 ## Research Summary:
@@ -64,61 +93,25 @@ Factorial survey experiment, donation, nudging
 
 ## Introduction
 
-What, why and how?
+Understanding why people decide 
 
-## Theory: 
-
-Relevant Theories, Hypnosis building
-
-## Method
-<!-- To do: Merge with Dorians part -->
-Why FSE?
-
-The next part will give short description of the survey methodology itsself:
-
-The initial planning was to run this experiment as Pen-and-Paper Personal Interviews (PAPI). Due to the Covid-19 Pandemic this was not feasible anymore. Therefore, we resorted to sending the PDF of the questionnaires to the respondents and asking them to print it and send it back. 
-
-When creating the questionnaires a sampling strategy needs to be employed. However, our survey only has 5 dimensions with 3,3,3,2,2 levels. This means that we have a universe of 108 unique vignettes. Including 12 vignettes for each survey we able to survey the complete universe of vignettes in 9 surveys. We surveyed 17 individuals and each deck at least once which should increases the validity.
-
-
-
-## Operationalization 
-
-For each of the twelve vignettes we presented the respondent with five dimensions for which he or she had to respond to the question _How likely is it that you are going to donate the amount?_
-The following dimensions were:
-
-* The working situation of the person who will be asked to donate. The available options are a minimum wage job and a well paying job. 
-* The amount of money you receive. It can be either 10, 100 or 1000 Euros.
-* The origin of the money. The available options were tax refund, gift from mother or a bonus from work.
-* The channel of the money. This differentiates between whether you have yet to receive the money and can decide to redirect it to the cause or whether you have already received the money.
-* Lastly, the goal of the donation which can be building state capacity in Uganda, supporting small businesses and entrepreneurs in Uganda or provide education for young mothers in Uganda.
-
-The respondent is then asked about their likelihood of donating using a Likert Scale with 5 values. The extremes (-2 and 2) were labeled "Very unlikely" and "Very likely" respectively. 
-
-Below you will find one example vignette as it was presented to the respondents:
-
-```{r echo=FALSE, out.width='105%'}
-knitr::include_graphics('Screenshot_vignette.PNG')
-```
-
-In addition to these 12 vignettes we asked the respondents to answer 5 questions on themselves, more specifically gender, year of birth, country of residence and highest educational qualification. 
 
 ## Theoretical Background and Relevance
 
 ### Relevance
 
-Donations for humanitarian purposes are essential for many organizations and regions of the world. There is much research in the literature to understand why and how people donate money. VGL XXX. 
-Although there are discussions about the efficiency and long-term effects of charitable donations and foreign aid (SACHS ZITIEREN), millions of people, through no fault of their own, find themselves in situations where donations are essential for survival. From this fact and the mandate of the UN Universal Declaration of Human Rights (ART 1 and 3) "All human beings are born free and equal in dignity and rights", "Everyone has the right to life, liberty and security of person". it follows that at this point in time it is not possible to refrain from making donations. 
-In this study we will not talk about the moral and economic implications of donations, but we will assume that they are necessary. We are only interested in understanding why people donate and what they donate for. The results of this experiment will help charitable organizations to better adapt fundraising to their specific circumstances. This should maximize the amount of money donated to charity. 
+Donations for humanitarian purposes are essential for many organizations and regions of the world. There is much research in the literature to understand why and how people donate money [@bennettFactorsUnderlyingInclination2003]. 
+Although there are discussions about the efficiency and long-term effects of charitable donations and foreign aid [@sachsEndingAfricaPoverty2004], millions of people, through no fault of their own, find themselves in situations where donations are essential for survival. From this fact and the mandate of the UN Universal Declaration of Human Rights (ART 1 and 3) "All human beings are born free and equal in dignity and rights", "Everyone has the right to life, liberty and security of person". it follows that at this point in time it is not possible to refrain from making donations. 
+In this study we will not focus about the moral and economic implications of donations, but the literature on the positive effects is considerate. In this paper we are interested in understanding why people donate and what they donate for. The results of this experiment will help charitable organizations to better adapt fundraising to their specific circumstances. This should maximize the amount of money donated to charity and in the long-run result in higher welfare creation in developing nations enabled through increased donations. 
 
 ### The Factorial Survey Methodology 
 
-Ample research is based on empirical analyses of the donation behavior of specific population groups. XXX While this approach reflects reality more accurately because it takes unobserved factors into account when individuals make decisions, it is precisely here that the weakness of this analysis technique lies. (XXX) Although Factorial Surveys are not a new approach in the field, we believe that our approach deserves some attention. Through a Factorial Survey it is possible to combine the advantages of an experiment with those of a questionnaire. This means that although the number of participants is significantly higher than in a laboratory experiment, causal statements can be made by allowing the researchers to control all factors.
+Ample research in this field is normally based on empirical analyses of the donation behavior of specific population groups [@konrathDevelopmentValidationMotives2018]. While this approach reflects reality more accurately because it takes a multitude of factors into account when individuals make decisions, it is precisely here that the weakness of this analysis technique lies. Research into donation behavior can be argued to have a blind spot for both desirability bias / clear social norms and endogeneity baked into many of the analyses [@grimmSocialDesirabilityBias2010]. Although Factorial Surveys are not a new approach in the field, there is much potential in using them to better understand drivers of human judgment. Traditional surveys have to deal with the problem of multicollinearity which Factorial surveys can address through making sure that factors are orthogonal [@rossiMeasuringSocialJudgments1982]. This method combines the advantages of an experiment with those of a questionnaire. Especially when focusing on one specific issue, Factorial Surveys can even be used to establish within-respondent comparisons by confronting the respondent to similar but slightly changed situations repeatedly, something that comes closer to having a true counter-factual than many other survey methodologies. Within-respondent comparisons will not be utilized in this paper as it falls beyond the scope of the research question. Summarizing, using Factorial Survey Experiments allows a significantly easier to argument for causality due to researchers to control a much higher number of factors. It 
 
 
 ### Theoretical Background
 
-In this section we will explain the theoretical connections of individual variables and dimensions with the willingness to donate. The first variable is the origin of the money that the participant should imagine to have received. Several authors have already investigated how different origins of money can change the probability and amount of a donation. For example, Steinberg et al. find in their study "Inheritance and Charitable Donations" that inherited money has a significantly higher elasticity in donations than earned money. The theoretical argumentation used by the authors is the "Mental Accounting Theory" according to Shefrin and Thaler. Mental accounting is used in behavioural economics as an approach to explain the varying handling of different (objectively often equivalent) financial transactions. Thaler's analyses for empirical anomalies in orthodox economics and his analysis of mental accounting earned him a Nobel Prize in 2017. Accordingly, his theories are widely accepted and represent the modern basis for behavioural economics. 
+In this section we will explain the theoretical connections of individual variables and dimensions with the willingness to donate. The first variable is the origin of the money that the participant should imagine to have received. Several authors have already investigated how different origins of money can change the probability and amount of a donation. For example, Steinberg et al. find in their study "Inheritance and Charitable Donations" that inherited money has a significantly higher elasticity in donations than earned money. The theoretical argumentation used by the authors is the "Mental Accounting Theory" according to Shefrin and Thaler [@thalerMentalAccountingMatters1999]. Mental accounting is used in behavioural economics as an approach to explain the varying handling of different (objectively often equivalent) financial transactions. Thaler's analyses for empirical anomalies in orthodox economics and his analysis of mental accounting earned him a Nobel Prize in 2017. Accordingly, his theories are widely accepted and represent the modern basis for behavioural economics. 
 In our study the variable takes the values: 
 
 * Tax refund 
@@ -133,24 +126,55 @@ In summary, our hypotheses regarding the first variable are:
 * H1b: $\beta_{earnedmodey} < 0$
 * H1c: $\beta_{giftfrommother} < 0$
 
-The next two variables we will consider are the income of the person and the amount of money received by each participant. Basically, the income of a person is a variable that in most cases correlates positively with the amount of donations. (e.g. CHANG, Wen-Chun. "Determinants of donations") The participants in our study should imagine that they either have a "well paying job" or a "poorly paying job". Thus, we expect that the willingness to donate increases with rising income, i.e. with a positive manifestation of the binary coded variable "well paying job". Further, participants should imagine that they received varying amounts of money through the previously described channels. The values of this variable were logarithmically increasing: 10,100 \&1000€. The range of values of the variable was determined by considering to what extent the amount of money would be logically compatible with the channels of money transfer. For example, a €10,000 money gift from a mother would be an overloading of the participants' imagination. Equally ridiculous would be a €1 bonus. 
-The next variable that the participants had to imagine was the goal of the humanitarian organisation. Three different variables were coded:
-* Building State Capacity = Funding the completion of a new highway which will connect the two main cities in Uganda \\
-*Providing education for mothers = Funding courses for women preparing them for Birthgiving and Motherhood \\
-*Supporting Entrpreneurs = Funding Consulting-work for SMEs in rural areas \\
+The next two variables we will consider are the income of the person and the amount of money received by each participant. Basically, the income of a person is a variable that in most cases correlates positively with the amount of donations. (e.g. CHANG, Wen-Chun. "Determinants of donations") The participants in our study should imagine that they either have a "well paying job" or a "poorly paying job". Thus, we expect that the willingness to donate increases with rising income, i.e. with a positive manifestation of the binary coded variable "well paying job". Further, participants should imagine that they received varying amounts of money through the previously described channels. The values of this variable were logarithmically increasing: 10, 100 \& 1000 €. The range of values of the variable was determined by considering to what extent the amount of money would be logically compatible with the channels of money transfer. For example, a 10,000 € money gift from a mother would be an overloading of the participants' imagination. Equally unrealistic would be a 1 € bonus. 
+The next variable that the participants were presented with was the goal of the humanitarian organisation. Three different variables were coded:
+
+* Building State Capacity = Funding the completion of a new highway which will connect the two main cities in Uganda 
+
+* Providing education for mothers = Funding courses for women preparing them for Birthgiving and Motherhood 
+
+* Supporting Entrepreneurs = Funding Consulting-work for SMEs in rural areas 
+
 Although it can be deduced from the literature that the goals of an organization are important determinants of the donation behavior of individuals, this was not the decisive determinant for our choice when coding the variables. (see Why Urban Poor Donate: A Study of Low-Income Charitable Giving in London) Our intention in coding the goals of the organisation was to link them to the origin of the money. Here we are once again taking up Thaler's Mental Accounting theory. If the income and expenses were in the same mental accounts of the participants it is expected that they will have less resistance to donate the money because no account will be "empty". If we look at Richard Thaler's most important work on this topic from 1999, we find this phenomenon in the first section of the first page. He explains: 
-"A few years ago I gave a talk to a group of executives in Switzerland. After the conference my wife and I spent a week visiting the area. At that time the Swiss franc was at an all-time high relative to the US dollar, so the usual high prices in Switzerland were astronomical. My wife and I comforted ourselves that I had received a fee for the talk that would easily cover the outrageous prices for hotels and meals. Had I received the same fee a week earlier for a talk in New York though, the vacation
-would have been much less enjoyable." In a later section, he elaborates that it was less painful to spend money in Switzerland because he had a Swiss lecture mental account that could not negatively impact his overall wealth as he was just being "filled". We expect that this will also be the case with the participants' donations. A gift from ones mother and Funding courses for women preparing them for birthgiving and motherhood in Uganda will be included in one Mental Account, as will Thaler's Swiss journey. The same is the true for a bonus resulting from ones own performance and the support of SMEs in developing countries. Finally, a tax refund and support for Uganda's state building capacity should also be included in only one account. Across all of the organizations' goals, we have kept the country target constant for two reasons. First, Uganda is one of the poorest countries in the world. According to the CIA World Factbook, Uganda ranks 199th in the category GDP per Capita. While this does not necessarily say everything about the living standards and the welfare needs of the country's inhabitants, it is a good proxy. (https://www.cia.gov/library/publications/the-world-factbook/rankorder/2004rank.html) The low standard of living in the country where the aid is to go is supposed to confirm the donors' expectation that the people receiving the money will need it. The second reason is that we want to vary as few factors as possible between the different categories in order to guarantee the greatest possible validity of our estimators. Nevertheless, we will analyse the individual interaction effects separately in order to rule out the possibility that the mental linking of the accounts may not have worked for all examples. Furthermore, especially in the case of donations with the goal of motherhood, we will add an interaction with the variable gender. Our hypotheses for the variable "Goals of Donation" are therefore as follows. 
+_"A few years ago I gave a talk to a group of executives in Switzerland. After the conference my wife and I spent a week visiting the area. At that time the Swiss franc was at an all-time high relative to the US dollar, so the usual high prices in Switzerland were astronomical. My wife and I comforted ourselves that I had received a fee for the talk that would easily cover the outrageous prices for hotels and meals. Had I received the same fee a week earlier for a talk in New York though, the vacation
+would have been much less enjoyable."_ In a later section, he elaborates that it was less painful to spend money in Switzerland because he had a Swiss lecture mental account that could not negatively impact his overall wealth as he was just being "filled". We expect that this will also be the case with the participants' donations. A gift from ones mother and Funding courses for women preparing them for giving birth and motherhood in Uganda will be included in one Mental Account, as will Thaler's Swiss journey. The same is the true for a bonus resulting from ones own performance and the support of SMEs in developing countries. Finally, a tax refund and support for Uganda's state building capacity should also be included in only one account. Across all of the organizations' goals, we have kept the country target constant for two reasons. First, Uganda is one of the poorest countries in the world. According to the CIA World Factbook, Uganda ranks 199th in the category GDP per Capita. While this does not necessarily say everything about the living standards and the welfare needs of the country's inhabitants, it is a good proxy. (https://www.cia.gov/library/publications/the-world-factbook/rankorder/2004rank.html) The low standard of living in the country where the aid is to go is supposed to confirm the donors' expectation that the people receiving the money will need it. The second reason is that we want to vary as few factors as possible between the different categories in order to guarantee the greatest possible validity of our estimators. Nevertheless, we will analyse the individual interaction effects separately in order to rule out the possibility that the mental linking of the accounts may not have worked for all examples. Furthermore, especially in the case of donations with the goal of motherhood, we will add an interaction with the variable gender. Our hypotheses for the variable "Goals of Donation" are therefore as follows: 
 
 
-H2: There will be a significant positive effect of the dummy variable "Equal" which takes the value 1 if the origin and the destination of the money are in the same mental account. So: $\delta_equal > 0$
+* H2: There will be a significant positive effect of the dummy variable "Equal" which takes the value 1 if the origin and the destination of the money are in the same mental account. So: $\delta_{equal} > 0$
 
-H2a: $\delta_{a_{man}} \times  \delta_{a_{goal:mother}} > 0 $
+* H2a: $\delta_{origin:mother} \times$  $\delta_{goal:mother}$ > 0 
 
-H2b: $\delta_{origin:taxrefund} \times \delta_{goal:state} > 0$
+* H2b: $\delta_{origin:taxrefund} \times \delta_{goal:state} > 0$
 
-H2c: $\delta_{goal:SME} > 0 $
+* H2c: $\delta_{goal:SME}$ > 0 
 
+### Methodology and survey operationalization
+
+In order to be able to test these hypotheses we use the beforementioned method of Factorial Survey Experiments:
+
+The initial planning was to run this experiment as Pen-and-Paper Personal Interviews (PAPI). Due to the Covid-19 Pandemic this was not feasible anymore. Therefore, we resorted to sending the PDF of the questionnaires to the respondents and asking them to print it and send it back. 
+
+When creating the questionnaires a sampling strategy needs to be employed. However, our survey only has 5 dimensions with 3,3,3,2,2 levels. This means that we have a universe of 108 unique vignettes. Including 12 vignettes for each survey we able to survey the complete universe of vignettes in 9 surveys. We surveyed 17 individuals and each deck at least once which should increases the validity.
+
+
+For each of the twelve vignettes we presented the respondent with five dimensions for which he or she had to respond to the question _How likely is it that you are going to donate the amount?_
+The following dimensions that were explained above will be quickly summarized below to provide a clear overview:
+  
+* The working situation of the person who will be asked to donate. The available options are a minimum wage job and a well paying job. 
+* The amount of money you receive. It can be either 10, 100 or 1000 Euros.
+* The origin of the money. The available options were tax refund, gift from mother or a bonus from work.
+* The channel of the money. This differentiates between whether you have yet to receive the money and can decide to redirect it to the cause or whether you have already received the money.
+* Lastly, the goal of the donation which can be building state capacity in Uganda, supporting small businesses and entrepreneurs in Uganda or provide education for young mothers in Uganda.
+
+The respondent is then asked about their likelihood of donating using a Likert Scale with 5 values. The extremes (-2 and 2) were labeled "Very unlikely" and "Very likely" respectively. 
+
+Below you will find one example vignette as it was presented to the respondents:
+  
+  ```{r echo=FALSE, out.width='105%'}
+knitr::include_graphics('Screenshot_vignette.PNG')
+```
+
+In addition to these 12 vignettes we asked the respondents to answer 7 questions on themselves, more specifically gender, year of birth, country of residence and highest educational qualification were asked before the survey. After the survey the respondents were asked how difficult they though these imaginary descriptions were to rate, to how many different causes they have donated in 2019 and what the approximate amount of money they have donated in 2019. For the later two questions one could refuse the answer.
 
 ## Results
 
@@ -165,52 +189,125 @@ p2=ggplot(data=Responses, aes(x=degree)) +
   ylim(0,15)+ theme_minimal()
 grid.arrange(p1,p2,nrow=1)
 
-#Lass uns ein theme bei allen Plots einfügen: theme_minimal und theme_bw
+```
+
+For the sake of completeness, the distribution of value for the questions on the general difficulty of rating the situations, the number of times donated and the total amount donated are plotted below. 
+
+The respondents were given the option to not give information on the later two questions which resulted in 1 person not giving information of the number of times donated and three respondents for the total amount donated.
+
+``` {r plotting_b_questions, include=TRUE, echo=FALSE, warning= FALSE}
+p3 =ggplot(data=Responses, aes(x=difficulty)) + 
+  geom_histogram(stat="count") +ylab("Count")+xlab("Difficulty")+
+  xlim(-5,5) + theme_minimal()
+p4 =ggplot(data=Responses, aes(x=times_donated)) + 
+  geom_bar() +ylab("Count")+xlab("Times donated")+
+  theme_minimal()
+p5 =ggplot(data=Responses, aes(x=amount_donated)) + 
+  geom_histogram(stat="bin",binwidth = 500) +ylab("Count")+xlab("Total amount donated")+
+  ylim(0,15) + stat_bin(binwidth=500, geom="text", aes(label=..count..), vjust=-1.5) 
+lay <- rbind(c(1,2),
+             c(3,3))
+grid.arrange(p3,p4,p5,layout_matrix =lay)
 ```
 
 In order to give a short display of the data, the distribution of the main outcome variable is plotted below:
 
-
-``` {r plotting_proportions, include=TRUE, echo=FALSE}
-#qplot(df$donation, geom = "blank") +
-#  geom_histogram(aes(y = ..density..), binwidth = 1, 
-#                 fill = "orange",  col = "black") +
-#  stat_function(fun = dnorm, 
-#                args = c(mean = mean(df$donation), 
-#                         sd = sd(df$donation)), 
-#                col = "darkgreen") +
-#  ylab("Proportion") + xlab("Selected willingness to donate")
-
-#Ich halte Dnorm hier nicht für angemessen :D Entweder wir gehen mit einer Chi Squared Verteilung oder wir lassen das stat_function argument raus
-
-p3 = ggplot(data=df, aes(x=donation)) + 
+``` {r plotting_proportions, include=TRUE, echo=FALSE, fig.width=8, fig.height=4}
+p6 = ggplot(data=df, aes(x=donation)) + 
         geom_bar(aes(y = (..count..)/sum(..count..))) +
         labs(title="Overall",
           x ="Willingness to donate", y = "Proportion") + 
         ylim(0,0.4) +
         theme_minimal()
 
-p4 = ggplot(df[df$gender=="Male",], aes(x=donation)) + 
+p7 = ggplot(df[df$gender=="Male",], aes(x=donation)) + 
         geom_bar(aes(y = (..count..)/sum(..count..))) + 
         labs(title="Males",
           x ="Willingness to donate", y = "Proportion") + 
         ylim(0,0.4) +
         theme_minimal()
 
-p5 = ggplot(df[df$gender=="Female",], aes(x=donation)) + 
+p8 = ggplot(df[df$gender=="Female",], aes(x=donation)) + 
         geom_bar(aes(y = (..count..)/sum(..count..))) + 
         labs(title="Females",
           x ="Willingness to donate", y = "Proportion") + 
         ylim(0,0.4) +
         theme_minimal()
-grid.arrange(p3,p4,p5,nrow=1)
+grid.arrange(p6,p7,p8,nrow=1)
 
 ```
 
+### Hypothesis testing
+
+As informing as the these descriptive plots were, we will now examine the hypotheses one by one in order to assess which we are able to reject. For this we have conducted three t-tests with $\mu = 0$, the results of which are displayed below:
+
+```{r  results='asis', header=FALSE, message=FALSE, echo=FALSE, fig.width=8,fig.height=5}
+t_test_mother=t.test(df$donation[which(df$origin == "gift_from_mother")],mu =  0)
+
+t_test_bonus=t.test(df$donation[which(df$origin == "bonus")],mu =  0)
+
+t_test_tax_refund= t.test(df$donation[which(df$origin == "tax_refund")],mu =  0)
+# Unfortunately this needs is hardcoded
+# TODO change that
+
+t_tests=data.frame("Variable" = c("Tax refund","Bonus","Gift from mother"),
+           "Mean" = c("-0.576","-0.083","-0.54"),
+           "t-value" = c("-3.3849","-0.472","-3.178"),
+           "p-value" = c(paste0(round(t_test_tax_refund[["p.value"]],3)," ***"),
+                         round(t_test_bonus[["p.value"]],3),
+                         paste0(round(t_test_mother[["p.value"]],3)," ***")
+                         )
+           ) 
+stargazer(t_tests,summary=F, title = "T-test results | ***: p<0.01",header=FALSE)
+
+```
+
+Starting with the first hypothesis which states that $\beta_{taxrefund} > 0$ we can reject the hypothesis. 
+For the hypothesis $H1b$  ($\beta_{earnedmoney} < 0$) we cannot reject the $H_0$ which would state that   $\beta_{earnedmoney} > 0$, so we must also reject the $H1b$.
+
+We can, however, reject the Null-hypothesis for the $H1c$ which means that our data validate that $\beta_{giftfrommother} < 0$, as the theory predicts.
+
+For the next hypotheses we run four regression displayed below:
 
 
-## Discussion
+```{r results='asis', header=FALSE, message=FALSE, echo=FALSE, fig.width=8,fig.height=5}
+lm_origin_equal = lm(donation ~ equal, df)
+lm_mother_equal = lm(donation ~ origin_gift_from_mother * goals_mothers, df)
+lm_taxrefund_equal = lm(donation ~ origin_tax_refund * goals_state_capacity, df)
+lm_SME_equal = lm(donation ~ origin_bonus* goals_entrepreneurs , df)
 
+stargazer(lm_origin_equal, lm_mother_equal ,lm_taxrefund_equal,lm_SME_equal,
+          title ="Regression Results",
+          dep.var.labels = c("Willingness to donate"),
+          covariate.labels = c("Equal", 
+                               "Origin: Gift from Mother","Goal: Mothers",
+                               "Interaction effect: Mother",
+                               "Origin: Tax refund","Goal: State capacity",
+                               "Interaction effect: State",
+                               "Origin: Bonus", "Goal: Entrepreneurship",
+                               "Interaction effect: Individual"),
+          align=TRUE,
+          report= "vc*s",
+          type="latex", 
+          table.placement = "h!",
+          header=FALSE,
+          omit.stat=c("LL","ser", "F","adj.rsq"),
+          no.space=TRUE,
+          column.sep.width = "0.5 pt"
+          )
+```
+
+Interestingly, these regressions do not confirm the mental accounting theory as we are not able to reject any $H_0$  for any of the four hypotheses. While this is unfortunate for this specific paper, it became clear for researchers in many fields that unreported null results are a major problem [@rosenthalFileDrawerProblem1979]. 
+
+## Discussion and Limitations
+
+This paper was able to show the benefits of Factorial Survey Experiments in theory-led validation of common hypotheses. In this case only one hypothesis could be confirmed/ one $H_0$ could be rejected: We come be fairly certain that monetary gifts received from the our own mother are more likely to be donated. 
+
+There are a number of limitations to this study. Firstly, is of course the sample size which is relatively low with only 17 respondents. However, due to the high number of vignettes that each answered (12 to be precise) we still have a fairly high n in the end (204). It is import to mention that the respondents were mostly male and relatively young which might introduce a selection bias.
+
+Furthermore, in research on donations, desirability bias can pose a challenge...
+
+## Bibliography
 
 
 

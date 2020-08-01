@@ -54,15 +54,13 @@ Questions_sorted$join = paste0(Questions_sorted$deck, "|", Questions_sorted$ques
 Responses_long$join = paste0(Responses_long$deck, "|", Responses_long$question_nr)
 
 df = left_join(Responses_long,Questions_sorted, by = c("join"="join"))
-View(df)
+
 ## Cleaning up the table
 df %<>% select(-c("questions_nr","join","deck.y","id_vignette"))
 ## Recoding:
 
-
-View(df)
 df = fastDummies::dummy_cols(df,select_columns = c("gender","degree","origin","income","received","goals","channel"),
-                             remove_first_dummy =  TRUE )
+                             remove_first_dummy =  FALSE )
 
 
 ## Deleting everything that is not needed anymore

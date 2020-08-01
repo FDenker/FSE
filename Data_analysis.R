@@ -68,21 +68,21 @@ lm(donation ~ gender +
 #        dx$donation[which(dx$origin != "gift_from_mother")])
 
 #Alternative Option:
-t.test(dx$donation[which(dx$origin == "gift_from_mother")],mu =  0)
+t_test_mother=t.test(dx$donation[which(dx$origin == "gift_from_mother")],mu =  0)
 
 # t.test(dx$donation[which(dx$origin == "bonus")],
 #        dx$donation[which(dx$origin != "bonus")])
 
-t.test(dx$donation[which(dx$origin == "bonus")],mu =  0)
+t_test_bonus=t.test(dx$donation[which(dx$origin == "bonus")],mu =  0)
 
 
 # t.test(dx$donation[which(dx$origin == "tax_refund")],
 #        dx$donation[which(dx$origin != "tax_refund")])
 
-t.test(dx$donation[which(dx$origin == "tax_refund")],mu =  0)
+t_test_tax_refund= t.test(dx$donation[which(dx$origin == "tax_refund")],mu =  0)
 
 
-data.frame("Variable" = c("Gift from mother","Bonus","Tax refund"),
+t_tests=data.frame("Variable" = c("Gift from mother","Bonus","Tax refund"),
            "mean of x" = c("-0.54","-0.083","-0.576"),
            "t-value" = c("-3.178","-0.472","-3.3849"),
            "p-value" = c("0.002***","0.639","0.001***"))
